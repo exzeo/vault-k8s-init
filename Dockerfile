@@ -1,6 +1,9 @@
 FROM golang:1.10.2
-WORKDIR /go/src/app
-COPY . .
+
+# WORKDIR /go/src/app
+COPY . /app
+WORKDIR /app
+
 RUN CGO_ENABLE=0 GOOS=linux go build -o vault-init -v .
 
 FROM launcher.gcr.io/google/debian9:latest
