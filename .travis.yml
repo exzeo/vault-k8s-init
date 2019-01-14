@@ -1,0 +1,9 @@
+language: go
+
+services:
+  - docker
+
+scripts:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker build -t $TRAVIS_REPO_SLUG:$TRAVIS_BRANCH .
+  - docker push $TRAVIS_REPO_SLUG:$TRAVIS_BRANCH
