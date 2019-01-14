@@ -3,7 +3,16 @@ language: go
 services:
   - docker
 
-script:
+stages:
+  - build
+  - push
+
+before_install:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker build -t $TRAVIS_REPO_SLUG:$TRAVIS_BRANCH .
-  - docker push $TRAVIS_REPO_SLUG:$TRAVIS_BRANCH
+
+jobs:
+  include:
+    - stage: build
+      script: docker build -t $TRAVIS_REPO_SLUG:$TRAVIS_BRANCH .
+    - stage: push
+      script: docker push $TRAVIS_REPO_SLUG:$TRAVIS_BRANCH
