@@ -82,10 +82,10 @@ func main() {
 	log.Println("Starting the vault-init service...")
 
 	// Set kubernetes token as ENV variable
-    kubeToken, err := ioutil.ReadFile("file.txt") // just pass the file name
-    if err != nil {
-        fmt.Print(err)
-    }
+	kubeToken, err := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/token") // just pass the file name
+	if err != nil {
+		fmt.Print(err)
+	}
 	os.Setenv("Token", string(kubeToken))
 
 	vaultAddr = os.Getenv("VAULT_ADDR")
@@ -97,7 +97,7 @@ func main() {
 	k8sHost = os.Getenv("KUBERNETES_SERVICE_HOST")
 	k8sPort = os.Getenv("KUBERNETES_PORT_443_TCP_PORT")
 	if k8sAddr == "" {
-		k8sAddr = "https://"+k8sHost+":"+k8sPort
+		k8sAddr = "https://" + k8sHost + ":" + k8sPort
 	}
 
 	checkInterval = os.Getenv("CHECK_INTERVAL")
@@ -460,4 +460,3 @@ func unsealOne(key string) (bool, error) {
 
 	return false, nil
 }
-
