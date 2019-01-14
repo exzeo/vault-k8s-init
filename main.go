@@ -27,6 +27,7 @@ var (
 	k8sHost       string
 	k8sPort       string
 	k8sAddr       string
+	k8sNamespace  string
 	checkInterval string
 	gcsBucketName string
 	httpClient    http.Client
@@ -292,9 +293,9 @@ func initialize() {
 	}
 
 	// POST to k8sAddr+`/api/v1/namespaces/vault-dev/secrets
-	namespace := "vault-dev"
+	k8sNamespace = os.Getenv("KUBERNETES_NAMESPACE")
 	k8sR := bytes.NewReader(k8sSecretRequestData)
-	k8sRequest, err := http.NewRequest("POST", k8sAddr+"/api/v1/namespaces/"+namespace+"/secrets", k8sR)
+	k8sRequest, err := http.NewRequest("POST", k8sAddr+"/api/v1/namespaces/"+k8sNamespace+"/secrets", k8sR)
 	if err != nil {
 		log.Println(err)
 		// return
