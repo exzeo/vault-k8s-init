@@ -97,7 +97,7 @@ func main() {
 	k8sHost = os.Getenv("KUBERNETES_SERVICE_HOST")
 	k8sPort = os.Getenv("KUBERNETES_PORT_443_TCP_PORT")
 	if k8sAddr == "" {
-		k8sAddr = "https://"+k8sHost+k8sPort
+		k8sAddr = "https://"+k8sHost+":"+k8sPort
 	}
 
 	checkInterval = os.Getenv("CHECK_INTERVAL")
