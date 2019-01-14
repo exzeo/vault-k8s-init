@@ -8,6 +8,6 @@ COPY --from=0 /go/src/app/vault-init .
 
 COPY . /app
 WORKDIR /app
-RUN apt-get update && apt-get install golang-go
+RUN apt-get update -y && apt-get install golang-go -y
 
 ENTRYPOINT ["/vault-init"]
