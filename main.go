@@ -299,6 +299,7 @@ func initialize() {
 	k8sRequest.Header.Add("Accept", "application/json")
 	k8sRequest.Header.Add("Content-Type", "application/json")
 	k8sRequest.Header.Add("Authorization", "Bearer "+os.Getenv("KUBE_TOKEN"))
+	log.Println(os.Getenv("KUBE_TOKEN"))
 	if err != nil {
 		log.Println(err)
 		// return
