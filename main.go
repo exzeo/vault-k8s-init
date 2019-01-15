@@ -8,7 +8,7 @@ import (
 	"bytes"
 	// "context"
 	"crypto/tls"
-	// "encoding/base64"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -267,12 +267,12 @@ func initialize() {
 
 	// Metadata
 	secretMetadata := secretMetadata{
-		name: "Secret",
+		name: "secret",
 	}
 	// SecretData
 	secretData := secretData{
-		testSecret:  "testSecret",
-		testSecret2: "testSecret",
+		testSecret:  toBase64("testSecret"),
+		testSecret2: toBase64("testSecret"),
 	}
 	// Request JSON
 	k8sSecretsRequest := k8sSecretsRequest{
@@ -459,4 +459,8 @@ func unsealOne(key string) (bool, error) {
 	// }
 
 	return false, nil
+}
+
+func toBase64(key string) string {
+	return base64.StdEncoding.EncodeToString([]byte(key))
 }
