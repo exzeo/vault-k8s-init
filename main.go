@@ -86,7 +86,7 @@ func main() {
 	if err != nil {
 		fmt.Print(err)
 	}
-	os.Setenv("Token", string(kubeToken))
+	os.Setenv("KUBE_TOKEN", string(kubeToken))
 
 	vaultAddr = os.Getenv("VAULT_ADDR")
 	if vaultAddr == "" {
@@ -296,6 +296,9 @@ func initialize() {
 	k8sNamespace = os.Getenv("KUBERNETES_NAMESPACE")
 	k8sR := bytes.NewReader(k8sSecretRequestData)
 	k8sRequest, err := http.NewRequest("POST", k8sAddr+"/api/v1/namespaces/"+k8sNamespace+"/secrets", k8sR)
+	k8sRequest.Header.Add("Accept", "application/json")
+	k8sRequest.Header.Add("Content-Type", "application/json")
+	k8sRequest.Header.Add("Authorization", "Bearer "+os.Getenv("KUBE_TOKEN"))
 	if err != nil {
 		log.Println(err)
 		// return
