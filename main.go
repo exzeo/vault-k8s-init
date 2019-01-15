@@ -42,21 +42,21 @@ type InitRequest struct {
 	SecretThreshold int `json:"secret_threshold"`
 }
 
-type secretMetadata struct {
-	name string
-}
+// type secretMetadata struct {
+// 	name string
+// }
 
-type secretData struct {
-	testSecret  string
-	testSecret2 string
-}
+// type secretData struct {
+// 	testSecret  string
+// 	testSecret2 string
+// }
 
-type k8sSecretsRequest struct {
-	kind       string
-	apiVersion string
-	metadata   secretMetadata
-	data       secretData
-}
+// type k8sSecretsRequest struct {
+// 	kind       string
+// 	apiVersion string
+// 	metadata   secretMetadata
+// 	data       secretData
+// }
 
 // InitResponse holds a Vault init response.
 type InitResponse struct {
@@ -88,8 +88,6 @@ func main() {
 		fmt.Print(err)
 	}
 	os.Setenv("KUBE_TOKEN", string(kubeToken))
-	log.Println("\nHERE " + string(kubeToken))
-	log.Println("\nHERE2 " + os.Getenv("KUBE_TOKEN"))
 
 	vaultAddr = os.Getenv("VAULT_ADDR")
 	if vaultAddr == "" {
@@ -269,20 +267,32 @@ func initialize() {
 	// log.Println("Encrypting unseal keys and the root token...")
 
 	// Metadata
-	secretMetadata := secretMetadata{
-		name: "secret",
-	}
-	// SecretData
-	secretData := secretData{
-		testSecret:  toBase64("testSecret"),
-		testSecret2: toBase64("testSecret"),
-	}
-	// Request JSON
-	k8sSecretsRequest := k8sSecretsRequest{
-		kind:       "Secret",
-		apiVersion: "v1",
-		metadata:   secretMetadata,
-		data:       secretData,
+	// secretMetadata := secretMetadata{
+	// 	name: "secret",
+	// }
+	// // SecretData
+	// secretData := secretData{
+	// 	testSecret:  toBase64("testSecret"),
+	// 	testSecret2: toBase64("testSecret"),
+	// }
+	// // Request JSON
+	// k8sSecretsRequest := k8sSecretsRequest{
+	// 	kind:       "Secret",
+	// 	apiVersion: "v1",
+	// 	metadata:   secretMetadata,
+	// 	data:       secretData,
+	// }
+
+	k8sSecretsRequest := map[string]interface{}{
+		"kind":       "Secret",
+		"apiVersion": "v1",
+		"metadata": map[string]string{
+			"name": "secret",
+		},
+		"data": map[string]interface{}{
+			"testSecret":  toBase64("testSecret"),
+			"testSecret2": toBase64("testSecret"),
+		},
 	}
 
 	// parse JSON Data
@@ -298,7 +308,6 @@ func initialize() {
 	// POST to k8sAddr+`/api/v1/namespaces/vault-dev/secrets
 	k8sNamespace = os.Getenv("KUBERNETES_NAMESPACE")
 	k8sToken = os.Getenv("KUBE_TOKEN")
-	log.Println(k8sToken)
 	k8sR := bytes.NewReader(k8sSecretRequestData)
 	k8sRequest, err := http.NewRequest("POST", k8sAddr+"/api/v1/namespaces/"+k8sNamespace+"/secrets", k8sR)
 	k8sRequest.Header.Add("Accept", "application/json")
