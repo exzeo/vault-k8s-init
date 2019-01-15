@@ -27,6 +27,7 @@ var (
 	k8sHost       string
 	k8sPort       string
 	k8sAddr       string
+	k8sToken      string
 	k8sNamespace  string
 	checkInterval string
 	gcsBucketName string
@@ -87,6 +88,8 @@ func main() {
 		fmt.Print(err)
 	}
 	os.Setenv("KUBE_TOKEN", string(kubeToken))
+	log.Println("\nHERE " + string(kubeToken))
+	log.Println("\nHERE2 " + os.Getenv("KUBE_TOKEN"))
 
 	vaultAddr = os.Getenv("VAULT_ADDR")
 	if vaultAddr == "" {
@@ -294,12 +297,13 @@ func initialize() {
 
 	// POST to k8sAddr+`/api/v1/namespaces/vault-dev/secrets
 	k8sNamespace = os.Getenv("KUBERNETES_NAMESPACE")
+	k8sToken = os.Getenv("KUBE_TOKEN")
+	log.Println(k8sToken)
 	k8sR := bytes.NewReader(k8sSecretRequestData)
 	k8sRequest, err := http.NewRequest("POST", k8sAddr+"/api/v1/namespaces/"+k8sNamespace+"/secrets", k8sR)
 	k8sRequest.Header.Add("Accept", "application/json")
 	k8sRequest.Header.Add("Content-Type", "application/json")
-	k8sRequest.Header.Add("Authorization", "Bearer "+os.Getenv("KUBE_TOKEN"))
-	log.Println(os.Getenv("KUBE_TOKEN"))
+	k8sRequest.Header.Add("Authorization", "Bearer "+k8sToken)
 	if err != nil {
 		log.Println(err)
 		// return
