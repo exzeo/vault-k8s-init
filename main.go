@@ -305,7 +305,7 @@ func initialize() {
 		// return
 	} else {
 		log.Println("k8sRequest PASSED")
-		log.Println(k8sRequest)
+		log.Print(k8sRequest)
 	}
 
 	// Response Received
