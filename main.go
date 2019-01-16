@@ -283,54 +283,17 @@ func initialize() {
 	// 	data:       secretData,
 	// }
 
-	k8sSecretsRequest := map[string]interface{}{
-		"kind":       "Secret",
-		"apiVersion": "v1",
-		"metadata": map[string]string{
-			"name": "secret",
-		},
-		"data": map[string]interface{}{
-			"testSecret":  toBase64("testSecret"),
-			"testSecret2": toBase64("testSecret"),
-		},
-	}
 
-	// parse JSON Data
-	k8sSecretRequestData, err := json.Marshal(&k8sSecretsRequest)
-	if err != nil {
-		log.Println(err)
-		// return
-	} else {
-		log.Println("k8sSecretRequestData PASSED")
-		log.Println(k8sSecretRequestData)
-	}
 
-	// POST to k8sAddr+`/api/v1/namespaces/vault-dev/secrets
-	k8sNamespace = os.Getenv("KUBERNETES_NAMESPACE")
-	k8sToken = os.Getenv("KUBE_TOKEN")
-	k8sR := bytes.NewReader(k8sSecretRequestData)
-	k8sRequest, err := http.NewRequest("POST", k8sAddr+"/api/v1/namespaces/"+k8sNamespace+"/secrets", k8sR)
-	k8sRequest.Header.Add("Accept", "application/json")
-	k8sRequest.Header.Add("Content-Type", "application/json")
-	k8sRequest.Header.Add("Authorization", "Bearer "+k8sToken)
-	if err != nil {
-		log.Println(err)
-		// return
-	} else {
-		log.Println("k8sRequest PASSED")
-		log.Print(k8sRequest)
-	}
 
-	// Response Received
-	k8sResponse, err := httpClient.Do(k8sRequest)
-	if err != nil {
-		log.Println(err)
-		// return
-	} else {
-		log.Println("k8sResponse PASSED")
-		log.Println(k8sResponse)
-	}
-	defer k8sResponse.Body.Close()
+
+
+		setSecrets()
+
+
+
+
+
 
 	// rootTokenEncryptRequest := &cloudkms.EncryptRequest{
 	// 	Plaintext: base64.StdEncoding.EncodeToString([]byte(initResponse.RootToken)),
@@ -480,4 +443,57 @@ func unsealOne(key string) (bool, error) {
 
 func toBase64(key string) string {
 	return base64.StdEncoding.EncodeToString([]byte(key))
+}
+
+func setSecrets() *http.Response {
+	k8sSecretsRequest := map[string]interface{}{
+		"kind":       "Secret",
+		"apiVersion": "v1",
+		"metadata": map[string]string{
+			"name": "secret",
+		},
+		"data": map[string]interface{}{
+			"testSecret":  toBase64("testSecret"),
+			"testSecret2": toBase64("testSecret"),
+		},
+	}
+
+	// parse JSON Data
+	k8sSecretRequestData, err := json.Marshal(&k8sSecretsRequest)
+	if err != nil {
+		log.Println(err)
+		// return
+	} else {
+		log.Println("k8sSecretRequestData PASSED")
+		log.Println(k8sSecretRequestData)
+	}
+
+	// POST to k8sAddr+`/api/v1/namespaces/vault-dev/secrets
+	k8sNamespace = os.Getenv("KUBERNETES_NAMESPACE")
+	k8sToken = os.Getenv("KUBE_TOKEN")
+	k8sR := bytes.NewReader(k8sSecretRequestData)
+	k8sRequest, err := http.NewRequest("POST", k8sAddr+"/api/v1/namespaces/"+k8sNamespace+"/secrets", k8sR)
+	k8sRequest.Header.Add("Accept", "application/json")
+	k8sRequest.Header.Add("Content-Type", "application/json")
+	k8sRequest.Header.Add("Authorization", "Bearer "+k8sToken)
+	if err != nil {
+		log.Println(err)
+		// return
+	} else {
+		log.Println("k8sRequest PASSED")
+		log.Print(k8sRequest)
+	}
+
+	// Response Received
+	k8sResponse, err := httpClient.Do(k8sRequest)
+	if err != nil {
+		log.Println(err)
+		// return
+	} else {
+		log.Println("k8sResponse PASSED")
+		log.Println(k8sResponse)
+	}
+	defer k8sResponse.Body.Close()
+
+	return k8sResponse
 }
