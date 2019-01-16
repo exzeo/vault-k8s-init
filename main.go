@@ -431,8 +431,12 @@ func setSecrets(initResponse InitResponse) *http.Response {
 			"name": "Vault Tokens",
 		},
 		"data": map[string]interface{}{
-			"testSecret":  toBase64("testSecret"),
-			"testSecret2": toBase64("testSecret"),
+			"vault_root_token":  toBase64(initResponse.RootToken),
+			"vault_token1": toBase64(initResponse.Keys[0]),
+			"vault_token2": toBase64(initResponse.Keys[1]),
+			"vault_token3": toBase64(initResponse.Keys[2]),
+			"vault_token4": toBase64(initResponse.Keys[3]),
+			"vault_token5": toBase64(initResponse.Keys[4]),
 		},
 	}
 
