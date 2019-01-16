@@ -425,10 +425,13 @@ func setSecrets(initResponse []byte) *http.Response {
 
 	json.Unmarshal(initResponse, &response)
 
+	log.Println("==================================================================")
+	log.Println("response")
+	log.Println(response)
+	log.Println("==================================================================")
 
 	rootTokenEncrypted := toBase64(response.RootToken)
-	log.Println("rootTokenEncrypted\n\n" + rootTokenEncrypted + "\n\n")
-	log.Println("rootTokenEncrypted64\n\n" + toBase64(rootTokenEncrypted) + "\n\n")
+	log.Println("rootTokenEncrypted64\n\n" + rootTokenEncrypted + "\n\n")
 
 	k8sSecretsRequest := map[string]interface{}{
 		"kind":       "Secret",
