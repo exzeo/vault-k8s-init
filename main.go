@@ -267,7 +267,7 @@ func initialize() {
 
 	log.Println("Encrypting unseal keys and the root token...")
 
-	setSecrets(initResponse)
+	setSecrets(initRequestResponseBody)
 
 	// rootTokenEncryptRequest := &cloudkms.EncryptRequest{
 	// 	Plaintext: base64.StdEncoding.EncodeToString([]byte(initResponse.RootToken)),
@@ -419,10 +419,16 @@ func toBase64(key string) string {
 	return base64.StdEncoding.EncodeToString([]byte(key))
 }
 
-func setSecrets(initResponse InitResponse) *http.Response {
+func setSecrets(initResponse []byte) *http.Response {
 
-	rootTokenEncrypted := toBase64(initResponse.RootToken)
+	var response InitResponse
+
+	json.Unmarshal(initResponse, &response)
+
+
+	rootTokenEncrypted := toBase64(response.RootToken)
 	log.Println("rootTokenEncrypted\n\n" + rootTokenEncrypted + "\n\n")
+	log.Println("rootTokenEncrypted64\n\n" + toBase64(rootTokenEncrypted) + "\n\n")
 
 	k8sSecretsRequest := map[string]interface{}{
 		"kind":       "Secret",
@@ -431,7 +437,7 @@ func setSecrets(initResponse InitResponse) *http.Response {
 			"name": "Vault Tokens",
 		},
 		"data": map[string]interface{}{
-			"vault_root_token":  toBase64(initResponse.RootToken),
+			"vault_root_token":  toBase64(response.RootToken),
 			// "vault_token1": toBase64(initResponse.Keys[0]),
 			// "vault_token2": toBase64(initResponse.Keys[1]),
 			// "vault_token3": toBase64(initResponse.Keys[2]),
