@@ -267,7 +267,7 @@ func initialize() {
 
 	json.Unmarshal(initRequestResponseBody, &initResponse)
 
-	fmt.Printf("Results: %v\n", initResponse)
+	fmt.Printf("Results: %v\n", response)
 
 	// log.Println("Encrypting unseal keys and the root token...")
 
