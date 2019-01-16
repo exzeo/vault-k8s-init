@@ -32,6 +32,7 @@ var (
 	checkInterval string
 	gcsBucketName string
 	httpClient    http.Client
+	unencoded     string
 
 	userAgent = fmt.Sprintf("vault-init/0.1.0 (%s)", runtime.Version())
 )
@@ -265,14 +266,8 @@ func initialize() {
 	}
 
 	log.Println("Encrypting unseal keys and the root token...")
-	log.Println(initResponse)
 
-	setSecrets()
-
-
-
-
-
+	setSecrets(initResponse)
 
 	// rootTokenEncryptRequest := &cloudkms.EncryptRequest{
 	// 	Plaintext: base64.StdEncoding.EncodeToString([]byte(initResponse.RootToken)),
@@ -424,12 +419,16 @@ func toBase64(key string) string {
 	return base64.StdEncoding.EncodeToString([]byte(key))
 }
 
-func setSecrets() *http.Response {
+func setSecrets(initResponse InitResponse) *http.Response {
+
+	rootTokenEncrypted := toBase64(initResponse.RootToken)
+	log.Println("rootTokenEncrypted\n\n" + rootTokenEncrypted + "\n\n")
+
 	k8sSecretsRequest := map[string]interface{}{
 		"kind":       "Secret",
 		"apiVersion": "v1",
 		"metadata": map[string]string{
-			"name": "secret",
+			"name": "Vault Tokens",
 		},
 		"data": map[string]interface{}{
 			"testSecret":  toBase64("testSecret"),
