@@ -221,74 +221,53 @@ func main() {
 }
 
 func initialize() {
-	// initRequest := InitRequest{
-	// 	SecretShares:    5,
-	// 	SecretThreshold: 3,
-	// }
+	initRequest := InitRequest{
+		SecretShares:    5,
+		SecretThreshold: 3,
+	}
 
-	// initRequestData, err := json.Marshal(&initRequest)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	return
-	// }
+	initRequestData, err := json.Marshal(&initRequest)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
-	// r := bytes.NewReader(initRequestData)
-	// request, err := http.NewRequest("PUT", vaultAddr+"/v1/sys/init", r)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	return
-	// }
+	r := bytes.NewReader(initRequestData)
+	request, err := http.NewRequest("PUT", vaultAddr+"/v1/sys/init", r)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
-	// response, err := httpClient.Do(request)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	return
-	// }
-	// defer response.Body.Close()
+	response, err := httpClient.Do(request)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	defer response.Body.Close()
 
-	// initRequestResponseBody, err := ioutil.ReadAll(response.Body)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	return
-	// }
+	initRequestResponseBody, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
-	// if response.StatusCode != 200 {
-	// 	log.Printf("init: non 200 status code: %d", response.StatusCode)
-	// 	return
-	// }
+	if response.StatusCode != 200 {
+		log.Printf("init: non 200 status code: %d", response.StatusCode)
+		return
+	}
 
-	// var initResponse InitResponse
+	var initResponse InitResponse
 
-	// if err := json.Unmarshal(initRequestResponseBody, &initResponse); err != nil {
-	// 	log.Println(err)
-	// 	return
-	// }
+	if err := json.Unmarshal(initRequestResponseBody, &initResponse); err != nil {
+		log.Println(err)
+		return
+	}
 
-	// log.Println("Encrypting unseal keys and the root token...")
+	log.Println("Encrypting unseal keys and the root token...")
+	log.Println(initResponse)
 
-	// Metadata
-	// secretMetadata := secretMetadata{
-	// 	name: "secret",
-	// }
-	// // SecretData
-	// secretData := secretData{
-	// 	testSecret:  toBase64("testSecret"),
-	// 	testSecret2: toBase64("testSecret"),
-	// }
-	// // Request JSON
-	// k8sSecretsRequest := k8sSecretsRequest{
-	// 	kind:       "Secret",
-	// 	apiVersion: "v1",
-	// 	metadata:   secretMetadata,
-	// 	data:       secretData,
-	// }
-
-
-
-
-
-
-		setSecrets()
+	setSecrets()
 
 
 
