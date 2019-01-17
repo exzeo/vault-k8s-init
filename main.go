@@ -265,10 +265,9 @@ func initialize() {
 	// 	return
 	// }
 
-
 	log.Println("Encrypting unseal keys and the root token...")
 
-	var initResponse interface {}
+	var initResponse interface{}
 
 	json.Unmarshal(initRequestResponseBody, &initResponse)
 
@@ -427,7 +426,6 @@ func toBase64(key string) string {
 // func setSecrets(initResponse interface{}) *http.Response {
 func setSecrets(initResponse InitResponse) *http.Response {
 
-
 	log.Print("===================================================")
 	log.Print("initResponse")
 	log.Print(initResponse)
@@ -451,17 +449,16 @@ func setSecrets(initResponse InitResponse) *http.Response {
 	// 	}
 	// }
 	log.Print("===================================================")
-
-	// log.Print("initResponse.RootToken")
-	// log.Print(initResponse.RootToken)
-	// log.Print("toBase64(initResponse.RootToken)")
-	// log.Print(toBase64(message.RootToken))
-	// log.Print("===================================================")
-	// log.Print("initResponse.Keys[0]")
-	// log.Print(initResponse.Keys[0])
-	// log.Print("toBase64(initResponse.Keys[0])")
-	// log.Print(toBase64(initResponse.Keys[0]))
-	// log.Print("===================================================")
+	log.Print("initResponse.RootToken")
+	log.Print(initResponse.RootToken)
+	log.Print("toBase64(initResponse.RootToken)")
+	log.Print(toBase64(initResponse.RootToken))
+	log.Print("===================================================")
+	log.Print("initResponse.Keys[0]")
+	log.Print(initResponse.Keys[0])
+	log.Print("toBase64(initResponse.Keys[0])")
+	log.Print(toBase64(initResponse.Keys[0]))
+	log.Print("===================================================")
 	// log.Print("initResponse.Keys[1]")
 	// log.Print(initResponse.Keys[1])
 	// log.Print("toBase64(initResponse.Keys[1])")
