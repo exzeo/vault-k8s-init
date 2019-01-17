@@ -267,7 +267,7 @@ func initialize() {
 
 	log.Println("Encrypting unseal keys and the root token...")
 
-	var initResponse interface{}
+	var initResponse InitResponse
 
 	json.Unmarshal(initRequestResponseBody, &initResponse)
 
