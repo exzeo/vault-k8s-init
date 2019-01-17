@@ -238,13 +238,15 @@ func initialize() {
 		return
 	}
 
+	log.Println("string(initRequestResponseBody[:])")
+	log.Println(string(initRequestResponseBody[:]))
 	log.Println("Encrypting unseal keys and the root token...")
 
 	// var initResponse InitResponse
 
 	// json.Unmarshal(initRequestResponseBody, &initResponse)
 
-	setSecrets(initResponse)
+	// setSecrets(initResponse)
 
 	// rootTokenEncryptRequest := &cloudkms.EncryptRequest{
 	// 	Plaintext: base64.StdEncoding.EncodeToString([]byte(initResponse.RootToken)),
