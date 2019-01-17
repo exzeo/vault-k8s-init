@@ -265,9 +265,20 @@ func initialize() {
 	// 	return
 	// }
 
-	json.Unmarshal(initRequestResponseBody, &initResponse)
 
-	fmt.Printf("Results: %v\n", response)
+
+
+	json.Unmarshal(initRequestResponseBody, &initResponse)
+	var target interface {}
+
+	json.NewDecoder(request.Body).Decode(target)
+
+	fmt.Printf("Results: %v\n", response.Body)
+	fmt.Printf("Results2: %v\n", target)
+
+
+
+
 
 	// log.Println("Encrypting unseal keys and the root token...")
 
