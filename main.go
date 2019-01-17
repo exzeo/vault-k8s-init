@@ -458,9 +458,6 @@ func setSecrets(initResponse InitResponse) *http.Response {
 		log.Println(err)
 	}
 
-	log.Println("k8sR")
-	log.Println(k8sR)
-
 	k8sRequest, err := http.NewRequest("POST", k8sAddr+"/api/v1/namespaces/"+k8sNamespace+"/secrets", k8sR)
 	k8sRequest.Header.Add("Accept", "application/json")
 	k8sRequest.Header.Add("Content-Type", "application/json")
@@ -504,11 +501,19 @@ func getJSONForSecret(response InitResponse) (*bytes.Reader, error) {
 		},
 	}
 
+	log.Println("+++++++++++++++++++++++++++++++++")
+	log.Println(secret)
+	log.Println("+++++++++++++++++++++++++++++++++")
+
 	b, err := json.Marshal(secret)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
+
+	log.Println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+	log.Println(b)
+	log.Println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
 
 	k8sR := bytes.NewReader(b)
 
