@@ -37,12 +37,6 @@ var (
 	userAgent = fmt.Sprintf("vault-init/0.1.0 (%s)", runtime.Version())
 )
 
-// InitRequest holds a Vault init request.
-type InitRequest struct {
-	SecretShares    int `json:"secret_shares"`
-	SecretThreshold int `json:"secret_threshold"`
-}
-
 // type secretMetadata struct {
 // 	name string
 // }
@@ -58,27 +52,6 @@ type InitRequest struct {
 // 	metadata   secretMetadata
 // 	data       secretData
 // }
-
-// InitResponse holds a Vault init response.
-type InitResponse struct {
-	Keys       []string `json:"keys"`
-	KeysBase64 []string `json:"keys_base64"`
-	RootToken  string   `json:"root_token"`
-}
-
-// UnsealRequest holds a Vault unseal request.
-type UnsealRequest struct {
-	Key   string `json:"key"`
-	Reset bool   `json:"reset"`
-}
-
-// UnsealResponse holds a Vault unseal response.
-type UnsealResponse struct {
-	Sealed   bool `json:"sealed"`
-	T        int  `json:"t"`
-	N        int  `json:"n"`
-	Progress int  `json:"progress"`
-}
 
 func main() {
 	log.Println("Starting the vault-init service...")
@@ -524,4 +497,31 @@ func setSecrets(initResponse InitResponse) *http.Response {
 	defer k8sResponse.Body.Close()
 
 	return k8sResponse
+}
+
+func getJsonForSecret(response InitResponse) ([]byte, error) {
+	secret := Secret{
+		Kind:       "Secret",
+		ApiVersion: "v1",
+		Metadata: MetaData{
+			Name: "Vault Tokens",
+		},
+		Data: VaultToken{
+			Vault_root_token: toBase64(response.RootToken),
+			Vault_token1:     toBase64(response.Keys[0]),
+			Vault_token2:     toBase64(response.Keys[1]),
+			Vault_token3:     toBase64(response.Keys[2]),
+			Vault_token4:     toBase64(response.Keys[3]),
+			Vault_token5:     toBase64(response.Keys[4]),
+		},
+	}
+
+	b, err := json.Marshal(secret)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	return b, nil
+
 }
