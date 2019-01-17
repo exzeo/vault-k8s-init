@@ -500,8 +500,14 @@ func getJSONForSecret(response InitResponse) (*bytes.Reader, error) {
 			Vault_token5:     toBase64(response.Keys[4]),
 		},
 	}
-
 	log.Println("+++++++++++++++++++++++++++++++++")
+	log.Println("response.RootToken")
+	log.Println(response.RootToken)
+	log.Println("+++++++++++++++++++++++++++++++++")
+	log.Println("response.Keys[0]")
+	log.Println(response.Keys[0])
+	log.Println("+++++++++++++++++++++++++++++++++")
+	log.Println("secret")
 	log.Println(secret)
 	log.Println("+++++++++++++++++++++++++++++++++")
 
@@ -510,13 +516,7 @@ func getJSONForSecret(response InitResponse) (*bytes.Reader, error) {
 		fmt.Println(err)
 		return nil, err
 	}
-
-	log.Println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
-	log.Println(b)
-	log.Println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
-
 	k8sR := bytes.NewReader(b)
 
 	return k8sR, nil
-
 }
