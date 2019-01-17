@@ -472,58 +472,58 @@ func setSecrets(initResponse interface{}) *http.Response {
 	// log.Print(toBase64(initResponse.Keys[2]))
 	// log.Print("===================================================")
 
-	// k8sSecretsRequest := map[string]interface{}{
-	// 	"kind":       "Secret",
-	// 	"apiVersion": "v1",
-	// 	"metadata": map[string]string{
-	// 		"name": "Vault Tokens",
-	// 	},
-	// 	"data": map[string]interface{}{
-	// 		"vault_root_token":  toBase64(initResponse.RootToken),
-	// 		// "vault_token1": toBase64(initResponse.Keys[0]),
-	// 		// "vault_token2": toBase64(initResponse.Keys[1]),
-	// 		// "vault_token3": toBase64(initResponse.Keys[2]),
-	// 		// "vault_token4": toBase64(initResponse.Keys[3]),
-	// 		// "vault_token5": toBase64(initResponse.Keys[4]),
-	// 	},
-	// }
+	k8sSecretsRequest := map[string]interface{}{
+		"kind":       "Secret",
+		"apiVersion": "v1",
+		"metadata": map[string]string{
+			"name": "Vault Tokens",
+		},
+		"data": map[string]interface{}{
+			// "vault_root_token":  toBase64(initResponse.RootToken),
+			// "vault_token1": toBase64(initResponse.Keys[0]),
+			// "vault_token2": toBase64(initResponse.Keys[1]),
+			// "vault_token3": toBase64(initResponse.Keys[2]),
+			// "vault_token4": toBase64(initResponse.Keys[3]),
+			// "vault_token5": toBase64(initResponse.Keys[4]),
+		},
+	}
 
-	// // parse JSON Data
-	// k8sSecretRequestData, err := json.Marshal(&k8sSecretsRequest)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	// return
-	// } else {
-	// 	log.Println("k8sSecretRequestData PASSED")
-	// 	log.Println(k8sSecretRequestData)
-	// }
+	// parse JSON Data
+	k8sSecretRequestData, err := json.Marshal(&k8sSecretsRequest)
+	if err != nil {
+		log.Println(err)
+		// return
+	} else {
+		log.Println("k8sSecretRequestData PASSED")
+		log.Println(k8sSecretRequestData)
+	}
 
-	// // POST to k8sAddr+`/api/v1/namespaces/vault-dev/secrets
-	// k8sNamespace = os.Getenv("KUBERNETES_NAMESPACE")
-	// k8sToken = os.Getenv("KUBE_TOKEN")
-	// k8sR := bytes.NewReader(k8sSecretRequestData)
-	// k8sRequest, err := http.NewRequest("POST", k8sAddr+"/api/v1/namespaces/"+k8sNamespace+"/secrets", k8sR)
-	// k8sRequest.Header.Add("Accept", "application/json")
-	// k8sRequest.Header.Add("Content-Type", "application/json")
-	// k8sRequest.Header.Add("Authorization", "Bearer "+k8sToken)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	// return
-	// } else {
-	// 	log.Println("k8sRequest PASSED")
-	// 	log.Print(k8sRequest)
-	// }
+	// POST to k8sAddr+`/api/v1/namespaces/vault-dev/secrets
+	k8sNamespace = os.Getenv("KUBERNETES_NAMESPACE")
+	k8sToken = os.Getenv("KUBE_TOKEN")
+	k8sR := bytes.NewReader(k8sSecretRequestData)
+	k8sRequest, err := http.NewRequest("POST", k8sAddr+"/api/v1/namespaces/"+k8sNamespace+"/secrets", k8sR)
+	k8sRequest.Header.Add("Accept", "application/json")
+	k8sRequest.Header.Add("Content-Type", "application/json")
+	k8sRequest.Header.Add("Authorization", "Bearer "+k8sToken)
+	if err != nil {
+		log.Println(err)
+		// return
+	} else {
+		log.Println("k8sRequest PASSED")
+		log.Print(k8sRequest)
+	}
 
-	// // Response Received
-	// k8sResponse, err := httpClient.Do(k8sRequest)
-	// if err != nil {
-	// 	log.Println(err)
-	// 	// return
-	// } else {
-	// 	log.Println("k8sResponse PASSED")
-	// 	log.Println(k8sResponse)
-	// }
-	// defer k8sResponse.Body.Close()
+	// Response Received
+	k8sResponse, err := httpClient.Do(k8sRequest)
+	if err != nil {
+		log.Println(err)
+		// return
+	} else {
+		log.Println("k8sResponse PASSED")
+		log.Println(k8sResponse)
+	}
+	defer k8sResponse.Body.Close()
 
-	// return k8sResponse
+	return k8sResponse
 }
