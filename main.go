@@ -424,31 +424,32 @@ func toBase64(key string) string {
 	return base64.StdEncoding.EncodeToString([]byte(key))
 }
 
-func setSecrets(initResponse interface{}) *http.Response {
+// func setSecrets(initResponse interface{}) *http.Response {
+func setSecrets(initResponse InitResponse) *http.Response {
 
 
 	log.Print("===================================================")
 	log.Print("initResponse")
 	log.Print(initResponse)
-	message := initResponse.(map[string]interface{})
-	log.Print("message")
-	log.Print(message)
-	log.Print("===================================================")
-	for k, v := range message {
-		switch vv := v.(type) {
-		case string:
-			fmt.Println(k, "is string", vv)
-		case float64:
-			fmt.Println(k, "is float64", vv)
-		case []interface{}:
-			fmt.Println(k, "is an array:")
-			for i, u := range vv {
-				fmt.Println(i, u)
-			}
-		default:
-			fmt.Println(k, "is of a type I don't know how to handle")
-		}
-	}
+	// message := initResponse.(map[string]interface{})
+	// log.Print("message")
+	// log.Print(message)
+	// log.Print("===================================================")
+	// for k, v := range message {
+	// 	switch vv := v.(type) {
+	// 	case string:
+	// 		fmt.Println(k, "is string", vv)
+	// 	case float64:
+	// 		fmt.Println(k, "is float64", vv)
+	// 	case []interface{}:
+	// 		fmt.Println(k, "is an array:")
+	// 		for i, u := range vv {
+	// 			fmt.Println(i, u)
+	// 		}
+	// 	default:
+	// 		fmt.Println(k, "is of a type I don't know how to handle")
+	// 	}
+	// }
 	log.Print("===================================================")
 
 	// log.Print("initResponse.RootToken")
