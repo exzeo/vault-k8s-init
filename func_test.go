@@ -35,12 +35,12 @@ func TestStruct(t *testing.T) {
 			Name: "Vault Tokens",
 		},
 		Data: VaultToken{
-			Vault_root_token: toBase64("test root"),
-			Vault_token1:     toBase64("test token 1"),
-			Vault_token2:     toBase64("test token 2"),
-			Vault_token3:     toBase64("test token 3"),
-			Vault_token4:     toBase64("test token 4"),
-			Vault_token5:     toBase64("test token 5"),
+			Vault_root_token: toBase64("test root")+"=",
+			Vault_token1:     toBase64("test token 1")+"=",
+			Vault_token2:     toBase64("test token 2")+"=",
+			Vault_token3:     toBase64("test token 3")+"=",
+			Vault_token4:     toBase64("test token 4")+"=",
+			Vault_token5:     toBase64("test token 5")+"=",
 		},
 	}
 
