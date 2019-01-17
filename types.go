@@ -29,7 +29,7 @@ type InitRequest struct {
 
 type Secret struct {
 	Kind       string     `json:"kind"`
-	ApiVersion string     `json:"apiVersion"`
+	APIVersion string     `json:"apiVersion"`
 	Metadata   MetaData   `json:"metadata"`
 	Data       VaultToken `json:"data"`
 }

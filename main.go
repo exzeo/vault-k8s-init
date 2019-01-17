@@ -487,7 +487,7 @@ func setSecrets(initResponse InitResponse) *http.Response {
 func getJSONForSecret(response InitResponse) (*bytes.Reader, error) {
 	secret := Secret{
 		Kind:       "Secret",
-		ApiVersion: "v1",
+		APIVersion: "v1",
 		Metadata: MetaData{
 			Name: "Vault Tokens",
 		},
