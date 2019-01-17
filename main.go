@@ -452,11 +452,14 @@ func setSecrets(initResponse InitResponse) *http.Response {
 	k8sNamespace = os.Getenv("KUBERNETES_NAMESPACE")
 	k8sToken = os.Getenv("KUBE_TOKEN")
 	// k8sR := bytes.NewReader(k8sSecretRequestData)
-	
+
 	k8sR, err := getJSONForSecret(initResponse)
 	if err != nil {
 		log.Println(err)
 	}
+
+	log.Println("k8sR")
+	log.Println(k8sR)
 
 	k8sRequest, err := http.NewRequest("POST", k8sAddr+"/api/v1/namespaces/"+k8sNamespace+"/secrets", k8sR)
 	k8sRequest.Header.Add("Accept", "application/json")
