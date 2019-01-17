@@ -231,18 +231,18 @@ func initialize() {
 		return
 	}
 
-	// var initResponse InitResponse
+	var initResponse InitResponse
 
-	// if err := json.Unmarshal(initRequestResponseBody, &initResponse); err != nil {
-	// 	log.Println(err)
-	// 	return
-	// }
+	if err := json.Unmarshal(initRequestResponseBody, &initResponse); err != nil {
+		log.Println(err)
+		return
+	}
 
 	log.Println("Encrypting unseal keys and the root token...")
 
-	var initResponse InitResponse
+	// var initResponse InitResponse
 
-	json.Unmarshal(initRequestResponseBody, &initResponse)
+	// json.Unmarshal(initRequestResponseBody, &initResponse)
 
 	setSecrets(initResponse)
 
@@ -492,20 +492,20 @@ func getJSONForSecret(response InitResponse) (*bytes.Reader, error) {
 			Name: "Vault Tokens",
 		},
 		Data: VaultToken{
-			Vault_root_token: toBase64(response.RootToken)+"=",
-			Vault_token1:     toBase64(response.Keys[0])+"=",
-			Vault_token2:     toBase64(response.Keys[1])+"=",
-			Vault_token3:     toBase64(response.Keys[2])+"=",
-			Vault_token4:     toBase64(response.Keys[3])+"=",
-			Vault_token5:     toBase64(response.Keys[4])+"=",
+			Vault_root_token: toBase64(response.RootToken),
+			Vault_token1:     toBase64(response.Keys[0]),
+			Vault_token2:     toBase64(response.Keys[1]),
+			Vault_token3:     toBase64(response.Keys[2]),
+			Vault_token4:     toBase64(response.Keys[3]),
+			Vault_token5:     toBase64(response.Keys[4]),
 		},
 	}
 	log.Println("+++++++++++++++++++++++++++++++++")
 	log.Println("response.RootToken")
-	log.Println(response.RootToken+"=")
+	log.Println(response.RootToken)
 	log.Println("+++++++++++++++++++++++++++++++++")
 	log.Println("response.Keys[0]")
-	log.Println(response.Keys[0]+"=")
+	log.Println(response.Keys[0])
 	log.Println("+++++++++++++++++++++++++++++++++")
 	log.Println("secret")
 	log.Println(secret)
