@@ -294,6 +294,9 @@ func main() {
 // 		log.Println(err)
 // 		return
 // 	}
+// log.Println("string(initRequestResponseBody[:])")
+// log.Println(string(initRequestResponseBody[:]))
+// log.Println("Encrypting unseal keys and the root token...")
 
 // 	if response.StatusCode != 200 {
 // 		log.Printf("init: non 200 status code: %d", response.StatusCode)
@@ -306,6 +309,7 @@ func main() {
 // 		log.Println(err)
 // 		return
 // 	}
+// setSecrets(initResponse)
 
 // 	log.Println("Encrypting unseal keys and the root token...")
 
