@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func Initialize() {
+func Initialize() VaultToken{
 
 	initRequest := InitRequest{
 		SecretShares:    NumTokens,
@@ -25,10 +25,21 @@ func Initialize() {
 		panic(err)
 	}
 
-	target := InitRequest{}
+	target := VaultToken{}
 
 	json.NewDecoder(res.Body).Decode(target)
 
+	return target
+}
+
+func SaveTokens(tokens VaultToken) {
+	exists,err := IsSecretExists()
+	if exists == true {
+		panic(err)
+	}
+	
+	log.Print(tokens)
+	CreateSecret(tokens)
 }
 
 func Unseal() {
@@ -36,7 +47,6 @@ func Unseal() {
 }
 
 func Verify() error {
-
 	status, err := GetStatus()
 	if err != nil {
 		return err
@@ -49,8 +59,9 @@ func Verify() error {
 		log.Println("Vault is unsealed and in standby mode.")
 	case 501:
 		log.Println("Vault is not initialized. Initializing and unsealing...")
-		Initialize()
-		Unseal()
+		request := Initialize()
+		SaveTokens(request)
+		// Unseal()
 	case 503:
 		log.Println("Vault is sealed. Unsealing...")
 		Unseal()

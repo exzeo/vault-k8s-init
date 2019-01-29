@@ -27,6 +27,7 @@ type InitRequest struct {
 	SecretThreshold int `json:"secret_threshold"`
 }
 
+// Secret holds a kubernetes secret
 type Secret struct {
 	Kind       string     `json:"kind"`
 	APIVersion string     `json:"apiVersion"`
@@ -34,10 +35,12 @@ type Secret struct {
 	Data       VaultToken `json:"data"`
 }
 
+// MetaData holds name for secret.
 type MetaData struct {
 	Name string `json:"name"`
 }
 
+// VaultToken holds root token and tokens to be added to secret.
 type VaultToken struct {
 	RootToken string   `json:"root_token"`
 	Tokens    []string `json:"tokens"`

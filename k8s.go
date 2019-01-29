@@ -40,13 +40,12 @@ func GetSecret() string {
 	return buf.String()
 }
 
-func IsSecretExists() bool {
+func IsSecretExists() (bool, string) {
 	token := GetSecret()
 	if token == "" {
-		return false
+		return false, ""
 	}
-
-	return true
+	return true, "Secret Exists!"
 }
 
 func CreateSecret(vault VaultToken) {
