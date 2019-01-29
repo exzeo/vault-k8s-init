@@ -39,10 +39,6 @@ type MetaData struct {
 }
 
 type VaultToken struct {
-	Vault_root_token string `json:"root_token"`
-	Vault_token1     string `json:"token1"`
-	Vault_token2     string `json:"token2"`
-	Vault_token3     string `json:"token3"`
-	Vault_token4     string `json:"token4"`
-	Vault_token5     string `json:"token5"`
+	RootToken string   `json:"root_token"`
+	Tokens    []string `json:"tokens"`
 }
