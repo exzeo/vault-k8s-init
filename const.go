@@ -9,5 +9,8 @@ var (
 	// TokensRequired is how many tokens required to unseal
 	TokensRequired = 3
 
+	// vaultSecretName is name of secret in Kubernetes
+	vaultSecretName = "vault-tokens"
+
 	httpClient http.Client
 )

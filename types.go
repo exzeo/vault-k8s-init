@@ -32,7 +32,7 @@ type Secret struct {
 	Kind       string     `json:"kind"`
 	APIVersion string     `json:"apiVersion"`
 	Metadata   MetaData   `json:"metadata"`
-	Data       VaultToken `json:"data"`
+	Data       K8sSecrets `json:"data"`
 }
 
 // MetaData holds name for secret.
@@ -43,5 +43,24 @@ type MetaData struct {
 // VaultToken holds root token and tokens to be added to secret.
 type VaultToken struct {
 	RootToken string   `json:"root_token"`
-	Tokens    []string `json:"tokens"`
+	Tokens []string `json:"keys"`
+}
+
+// K8sSecrets holds root token and tokens to be added to secret.
+type K8sSecrets struct {
+	RootToken string  `json:"root-token"`
+	Token1    string  `json:"key1"`
+	Token2    string  `json:"key2"`
+	Token3    string  `json:"key3"`
+	Token4    string  `json:"key4"`
+	Token5    string  `json:"key5"`
+}
+
+type UnsealToken struct {
+	UnsealKey string   `json:"key"`
+}
+
+type VaultResponse struct {
+	Sealed bool   `json:"sealed"`
+	Progress int   `json:"progress"`
 }

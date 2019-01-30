@@ -1,18 +1,15 @@
 package main
 
 import (
-	"bytes"
-	"fmt"
+	"encoding/base64"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
+	"strconv"
 )
 
-var (
-	vaultSecretName = "vault-tokens"
-)
-
-func GetSecret() string {
+func GetSecret() Secret {
 	req, err := http.NewRequest("GET", GetSecretUrl()+"/"+vaultSecretName, nil)
 	if err != nil {
 		panic(err)
@@ -25,31 +22,49 @@ func GetSecret() string {
 		req.Header.Add("Authorization", "Bearer "+string(token))
 	}
 
-	// Response Received
 	res, err := httpClient.Do(req)
 	if err != nil {
 		panic(err)
 	}
+	defer res.Body.Close()
 
-	if res.StatusCode != 200 {
-		return ""
+	k8sResponse, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Println(err)
 	}
 
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(res.Body)
-	return buf.String()
+	target := Secret{}
+	fromJSON(k8sResponse, &target)
+	return target
 }
 
 func IsSecretExists() (bool, string) {
 	token := GetSecret()
-	if token == "" {
+	if token.Data.RootToken == "" {
 		return false, ""
 	}
 	return true, "Secret Exists!"
 }
 
-func CreateSecret(vault VaultToken) {
+func SaveTokens(tokens VaultToken) {
+	exists, err := IsSecretExists()
+	if exists == true {
+		panic(err)
+	}
 
+	secret := K8sSecrets{
+		RootToken: base64.StdEncoding.EncodeToString([]byte(tokens.RootToken)),
+		Token1:    base64.StdEncoding.EncodeToString([]byte(tokens.Tokens[0])),
+		Token2:    base64.StdEncoding.EncodeToString([]byte(tokens.Tokens[1])),
+		Token3:    base64.StdEncoding.EncodeToString([]byte(tokens.Tokens[2])),
+		Token4:    base64.StdEncoding.EncodeToString([]byte(tokens.Tokens[3])),
+		Token5:    base64.StdEncoding.EncodeToString([]byte(tokens.Tokens[4])),
+	}
+
+	CreateSecret(secret)
+}
+
+func CreateSecret(vault K8sSecrets) {
 	secret := Secret{
 		Kind:       "Secret",
 		APIVersion: "v1",
@@ -73,15 +88,15 @@ func CreateSecret(vault VaultToken) {
 		req.Header.Add("Authorization", "Bearer "+string(token))
 	}
 
-	// Response Received
 	res, err := httpClient.Do(req)
 	if err != nil {
 		panic(err)
 	}
-
 	defer res.Body.Close()
 
-	fmt.Println(res)
+	if res.StatusCode != 201 {
+		panic("init: non 201 status code: " + strconv.Itoa(res.StatusCode))
+	}
 }
 
 func GetBearerToken() string {

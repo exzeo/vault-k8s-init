@@ -1,14 +1,15 @@
 package main
 
 import (
-	"encoding/json"
+	"encoding/base64"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 )
 
-func Initialize() VaultToken{
-
+func Initialize() VaultToken {
 	initRequest := InitRequest{
 		SecretShares:    NumTokens,
 		SecretThreshold: TokensRequired,
@@ -24,26 +25,85 @@ func Initialize() VaultToken{
 	if err != nil {
 		panic(err)
 	}
+	defer res.Body.Close()
+
+	if res.StatusCode != 200 {
+		panic("init: non 200 status code: " + strconv.Itoa(res.StatusCode))
+	}
+
+	vaultResponse, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Println(err)
+	}
 
 	target := VaultToken{}
-
-	json.NewDecoder(res.Body).Decode(target)
-
+	fromJSON(vaultResponse, &target)
 	return target
 }
 
-func SaveTokens(tokens VaultToken) {
-	exists,err := IsSecretExists()
-	if exists == true {
+func Unseal() {
+	exists, err := IsSecretExists()
+	if exists == false {
+		log.Print("Secrets do not exist!")
 		panic(err)
 	}
-	
-	log.Print(tokens)
-	CreateSecret(tokens)
+
+	secrets := GetSecret()
+	token1, error := base64.StdEncoding.DecodeString(secrets.Data.Token1)
+	if error != nil {
+		log.Print("Could not decode token1")
+		panic(error)
+	}
+	token2, error := base64.StdEncoding.DecodeString(secrets.Data.Token2)
+	if error != nil {
+		log.Print("Could not decode token2")
+		panic(error)
+	}
+	token3, error := base64.StdEncoding.DecodeString(secrets.Data.Token3)
+	if error != nil {
+		log.Print("Could not decode token3")
+		panic(error)
+	}
+
+	UseKey(string(token1[:]))
+	UseKey(string(token2[:]))
+	UseKey(string(token3[:]))
 }
 
-func Unseal() {
+func UseKey(key string) {
+	unsealToken := UnsealToken{
+		UnsealKey: key,
+	}
 
+	b := toJSON(unsealToken)
+
+	req, err := http.NewRequest("POST", GetVaultUrl("/v1/sys/unseal"), &b)
+	if err != nil {
+		panic(err)
+	}
+
+	req.Header.Add("Content-Type", "application/json")
+
+	res, err := httpClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != 200 {
+		log.Printf("Status Code: %d", res.StatusCode)
+		log.Printf("Body: %+v", res.Body)
+
+		panic("init: non 200 status code: " + strconv.Itoa(res.StatusCode))
+	}
+
+	vaultResponse, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Println(err)
+	}
+
+	target := VaultResponse{}
+	fromJSON(vaultResponse, &target)
 }
 
 func Verify() error {
@@ -59,9 +119,9 @@ func Verify() error {
 		log.Println("Vault is unsealed and in standby mode.")
 	case 501:
 		log.Println("Vault is not initialized. Initializing and unsealing...")
-		request := Initialize()
-		SaveTokens(request)
-		// Unseal()
+		vaultResponse := Initialize()
+		SaveTokens(vaultResponse)
+		Unseal()
 	case 503:
 		log.Println("Vault is sealed. Unsealing...")
 		Unseal()
