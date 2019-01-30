@@ -107,11 +107,8 @@ func UseKey(key string) {
 }
 
 func Verify() error {
-	status, err := GetStatus()
-	if err != nil {
-		return err
-	}
-
+	status := GetStatus()
+	
 	switch status {
 	case 200:
 		log.Println("Vault is initialized and unsealed.")
@@ -132,10 +129,13 @@ func Verify() error {
 	return nil
 }
 
-func GetStatus() (int, error) {
+func GetStatus() (int) {
 	res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
+	if err != nil {
+		log.Printf("There was an error getting the status: %+v", err)
+	}
 
-	return res.StatusCode, err
+	return res.StatusCode
 }
 
 func GetVaultUrl(url string) string {
