@@ -52,6 +52,7 @@ func main() {
 		err := Verify()
 		if err != nil {
 			log.Println(err)
+			log.Printf("Trying again in %d seconds", checkIntervalDuration)
 			time.Sleep(checkIntervalDuration)
 			continue
 		}
