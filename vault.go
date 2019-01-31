@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 )
 
 func Initialize() VaultToken {
@@ -108,7 +109,7 @@ func UseKey(key string) {
 
 func Verify() error {
 	status := GetStatus()
-	
+
 	switch status {
 	case 200:
 		log.Println("Vault is initialized and unsealed.")
@@ -129,10 +130,14 @@ func Verify() error {
 	return nil
 }
 
-func GetStatus() (int) {
+func GetStatus() int {
+	// res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
 	res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
 	if err != nil {
 		log.Printf("There was an error getting the status: %+v", err)
+		log.Printf("Sleeping 10 seconds")
+		time.Sleep(10 * time.Second)
+		GetStatus()
 	}
 
 	return res.StatusCode
