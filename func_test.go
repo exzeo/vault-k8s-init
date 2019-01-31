@@ -5,7 +5,7 @@ import (
 )
 
 func TestCreateSecret(t *testing.T) {
-	GetStatus()
+	// GetStatus()
 	// 	request := Initialize()
 	// 	SaveTokens(request)
 	// 	Unseal()
