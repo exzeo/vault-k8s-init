@@ -1,11 +1,12 @@
 package main
 
-// import (
-// 	"testing"
-// )
+import (
+	"testing"
+)
 
-// func TestCreateSecret(t *testing.T) {
-// 	request := Initialize()
-// 	SaveTokens(request)
-// 	Unseal()
-// }
+func TestCreateSecret(t *testing.T) {
+	GetStatus()
+	// 	request := Initialize()
+	// 	SaveTokens(request)
+	// 	Unseal()
+}
