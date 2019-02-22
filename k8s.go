@@ -15,6 +15,7 @@ import (
 func GetSecret() Secret {
 	req, err := http.NewRequest("GET", GetSecretUrl()+"/"+vaultSecretName, nil)
 	if err != nil {
+		log.Print(err)
 		panic(err)
 	}
 
@@ -27,6 +28,7 @@ func GetSecret() Secret {
 
 	res, err := httpClient.Do(req)
 	if err != nil {
+		log.Print(err)
 		panic(err)
 	}
 	defer res.Body.Close()
@@ -52,6 +54,7 @@ func IsSecretExists() (bool, string) {
 func SaveTokens(tokens VaultToken) {
 	exists, err := IsSecretExists()
 	if exists == true {
+		log.Print(err)
 		panic(err)
 	}
 
@@ -66,6 +69,13 @@ func SaveTokens(tokens VaultToken) {
 
 	CreateSecret(secret)
 }
+
+
+
+
+
+
+
 
 func CreateSecret(vault K8sSecrets) {
 	secret := Secret{
@@ -117,6 +127,14 @@ func CreateSecret(vault K8sSecrets) {
 		panic("init: non 201 status code: " + strconv.Itoa(res.StatusCode))
 	}
 }
+
+
+
+
+
+
+
+
 
 func GetBearerToken() string {
 
