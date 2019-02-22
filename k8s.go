@@ -1,7 +1,10 @@
 package main
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/base64"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -81,14 +84,30 @@ func CreateSecret(vault K8sSecrets) {
 		panic(err)
 	}
 
-	req.Header.Add("Content-Type", "application/json")
-
 	token := GetBearerToken()
-	if token != "" {
-		req.Header.Add("Authorization", "Bearer "+string(token))
+	if token == "" {
+		log.Printf("No kubernetes token exists!!!")
 	}
 
-	res, err := httpClient.Do(req)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", string(token)))
+
+	caCertPool := x509.NewCertPool()
+	caCert, err := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")
+	if err != nil {
+		panic(err) // Can't find cert file
+	}
+	caCertPool.AppendCertsFromPEM(caCert)
+
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				RootCAs: caCertPool,
+			},
+		},
+	}
+
+	res, err := client.Do(req)
 	if err != nil {
 		panic(err)
 	}
@@ -126,7 +145,7 @@ func GetSecretUrl() string {
 	}
 
 	host := os.Getenv("KUBERNETES_SERVICE_HOST")
-	port := os.Getenv("KUBERNETES_PORT_443_TCP_PORT")
+	port := os.Getenv("KUBERNETES_SERVICE_PORT")
 	if host != "" && port != "" {
 		url = "https://" + host + ":" + port
 
