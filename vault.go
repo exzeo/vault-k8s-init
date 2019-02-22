@@ -147,8 +147,8 @@ func GetStatus() int {
 func GetVaultUrl(url string) string {
 	vaultAddr := os.Getenv("VAULT_ADDR")
 	if vaultAddr == "" {
-		// return "https://127.0.0.1:8200"
-		return "http://vault-dev.exzeo.io:8200" + url
+		return "http://vault-dev:8200" + url
+		// return "http://vault-dev.exzeo.io:8200" + url
 	}
 
 	return vaultAddr + url
