@@ -106,39 +106,39 @@ func UseKey(key string) {
 	fromJSON(vaultResponse, &target)
 }
 
-func Verify() error {
-	res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
-	if err != nil {
-		log.Printf("err: %s", err)
-	}
-	if res != nil && res.Body != nil {
-		res.Body.Close()
-	}
+// func Verify(status) error {
+// 	// res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
+// 	// if err != nil {
+// 	// 	log.Printf("err: %s", err)
+// 	// }
+// 	// if res != nil && res.Body != nil {
+// 	// 	res.Body.Close()
+// 	// }
 
-	// status := GetStatus()
-	status := res.StatusCode
-	log.Printf("Got status of: %d", status)
+// 	// // status := GetStatus()
+// 	// status := res.StatusCode
+// 	// log.Printf("Got status of: %d", status)
 
-	switch status {
-	case 200:
-		log.Println("Vault is initialized and unsealed.")
-	case 429:
-		log.Println("Vault is unsealed and in standby mode.")
-	case 501:
-		log.Println("Vault is not initialized. Initializing and unsealing...")
-		vaultResponse := Initialize()
-		log.Print("Initialized!! Saving Tokens")
-		SaveTokens(vaultResponse)
-		Unseal()
-	case 503:
-		log.Println("Vault is sealed. Unsealing...")
-		Unseal()
-	default:
-		log.Printf("Vault is in an unknown state. Status code: %d", status)
-	}
+// 	switch status {
+// 	case 200:
+// 		log.Println("Vault is initialized and unsealed.")
+// 	case 429:
+// 		log.Println("Vault is unsealed and in standby mode.")
+// 	case 501:
+// 		log.Println("Vault is not initialized. Initializing and unsealing...")
+// 		vaultResponse := Initialize()
+// 		log.Print("Initialized!! Saving Tokens")
+// 		SaveTokens(vaultResponse)
+// 		Unseal()
+// 	case 503:
+// 		log.Println("Vault is sealed. Unsealing...")
+// 		Unseal()
+// 	default:
+// 		log.Printf("Vault is in an unknown state. Status code: %d", status)
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
 
 // func GetStatus() int {
 // 	// res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))

@@ -49,12 +49,34 @@ func main() {
 		default:
 		}
 
-		err := Verify()
+		response, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
+
+		if response != nil && response.Body != nil {
+			response.Body.Close()
+		}
+
 		if err != nil {
 			log.Println(err)
-			log.Printf("Trying again in %d seconds", checkIntervalDuration)
 			time.Sleep(checkIntervalDuration)
 			continue
+		}
+
+		switch response.StatusCode {
+		case 200:
+			log.Println("Vault is initialized and unsealed.")
+		case 429:
+			log.Println("Vault is unsealed and in standby mode.")
+		case 501:
+			log.Println("Vault is not initialized. Initializing and unsealing...")
+			vaultResponse := Initialize()
+			log.Print("Initialized!! Saving Tokens")
+			SaveTokens(vaultResponse)
+			Unseal()
+		case 503:
+			log.Println("Vault is sealed. Unsealing...")
+			Unseal()
+		default:
+			log.Printf("Vault is in an unknown state. Status code: %d", response.StatusCode)
 		}
 
 		log.Printf("Next check in %s", checkIntervalDuration)
