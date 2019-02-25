@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"time"
 )
 
 func Initialize() VaultToken {
@@ -108,7 +107,16 @@ func UseKey(key string) {
 }
 
 func Verify() error {
-	status := GetStatus()
+	res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
+	if err != nil {
+		log.Printf("err: %s", err)
+	}
+	if res != nil && res.Body != nil {
+		res.Body.Close()
+	}
+
+	// status := GetStatus()
+	status := res.StatusCode
 	log.Printf("Got status of: %d", status)
 
 	switch status {
@@ -132,21 +140,21 @@ func Verify() error {
 	return nil
 }
 
-func GetStatus() int {
-	// res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
-	res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
-	if res != nil && res.Body != nil {
-		res.Body.Close()
-	}
-	if err != nil {
-		log.Printf("err: %s", err)
-		log.Printf("Sleeping 10 seconds")
-		time.Sleep(10 * time.Second)
-		GetStatus()
-	}
-	log.Printf("Status Code: %d", res.StatusCode)
-	return res.StatusCode
-}
+// func GetStatus() int {
+// 	// res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
+// 	res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
+// 	if res != nil && res.Body != nil {
+// 		res.Body.Close()
+// 	}
+// 	if err != nil {
+// 		log.Printf("err: %s", err)
+// 		log.Printf("Sleeping 10 seconds")
+// 		time.Sleep(10 * time.Second)
+// 		GetStatus()
+// 	}
+// 	log.Printf("Status Code: %d", res.StatusCode)
+// 	return res.StatusCode
+// }
 
 func GetVaultUrl(url string) string {
 	vaultAddr := os.Getenv("VAULT_ADDR")
