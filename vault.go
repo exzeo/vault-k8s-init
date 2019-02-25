@@ -109,6 +109,7 @@ func UseKey(key string) {
 
 func Verify() error {
 	status := GetStatus()
+	log.Printf("Got status of: %d", status)
 
 	switch status {
 	case 200:
