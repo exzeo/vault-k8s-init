@@ -135,8 +135,8 @@ func GetStatus() int {
 	res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
 	if err != nil {
 		log.Printf("err: %s", err)
-		log.Printf("Sleeping 10 seconds")
-		time.Sleep(10 * time.Second)
+		// log.Printf("Sleeping 10 seconds")
+		// time.Sleep(10 * time.Second)
 		// GetStatus()
 	}
 	log.Printf("Status Code: %d", res.StatusCode)
