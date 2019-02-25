@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 )
 
 func Initialize() VaultToken {
@@ -132,11 +133,14 @@ func Verify() error {
 func GetStatus() int {
 	// res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
 	res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
+	if res != nil && res.Body != nil {
+		res.Body.Close()
+	}
 	if err != nil {
 		log.Printf("err: %s", err)
-		// log.Printf("Sleeping 10 seconds")
-		// time.Sleep(10 * time.Second)
-		// GetStatus()
+		log.Printf("Sleeping 10 seconds")
+		time.Sleep(10 * time.Second)
+		GetStatus()
 	}
 	log.Printf("Status Code: %d", res.StatusCode)
 	return res.StatusCode
