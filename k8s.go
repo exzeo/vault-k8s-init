@@ -25,9 +25,25 @@ func GetSecret() Secret {
 		req.Header.Add("Authorization", "Bearer "+string(token))
 	}
 
-	res, err := httpClient.Do(req)
+	caCertPool := x509.NewCertPool()
+	caCert, err := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/ca.crt")
+	if err != nil {
+		panic(err) // Can't find cert file
+	}
+	caCertPool.AppendCertsFromPEM(caCert)
+
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				RootCAs: caCertPool,
+			},
+		},
+	}
+
+	res, err := client.Do(req)
 	if err != nil {
 		log.Print(err)
+		// panic(err)
 	}
 	defer res.Body.Close()
 
