@@ -137,7 +137,7 @@ func GetStatus() int {
 		log.Printf("err: %s", err)
 		log.Printf("Sleeping 10 seconds")
 		time.Sleep(10 * time.Second)
-		GetStatus()
+		// GetStatus()
 	}
 	log.Printf("Status Code: %d", res.StatusCode)
 	return res.StatusCode
