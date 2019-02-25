@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/base64"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -135,12 +134,12 @@ func GetStatus() int {
 	// res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
 	res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
 	if err != nil {
-		fmt.Print(err)
+		log.Printf("err: %s", err)
 		log.Printf("Sleeping 10 seconds")
 		time.Sleep(10 * time.Second)
 		GetStatus()
 	}
-
+	log.Printf("Status Code: %d", res.StatusCode)
 	return res.StatusCode
 }
 
