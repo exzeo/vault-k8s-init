@@ -49,7 +49,7 @@ func main() {
 		default:
 		}
 
-		response, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
+		response, err := httpClient.Head(GetVaultURL("/v1/sys/health"))
 
 		if response != nil && response.Body != nil {
 			response.Body.Close()
@@ -87,5 +87,4 @@ func main() {
 		case <-time.After(checkIntervalDuration):
 		}
 	}
-
 }

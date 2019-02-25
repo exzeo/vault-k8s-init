@@ -9,6 +9,7 @@ import (
 	"strconv"
 )
 
+// Initialize - initialize vault
 func Initialize() VaultToken {
 	initRequest := InitRequest{
 		SecretShares:    NumTokens,
@@ -16,7 +17,7 @@ func Initialize() VaultToken {
 	}
 
 	r := toJSON(initRequest)
-	req, err := http.NewRequest("PUT", GetVaultUrl("/v1/sys/init"), &r)
+	req, err := http.NewRequest("PUT", GetVaultURL("/v1/sys/init"), &r)
 	if err != nil {
 		panic(err)
 	}
@@ -41,6 +42,7 @@ func Initialize() VaultToken {
 	return target
 }
 
+// Unseal - unseal vault
 func Unseal() {
 	exists, err := IsSecretExists()
 	if exists == false {
@@ -70,6 +72,7 @@ func Unseal() {
 	UseKey(string(token3[:]))
 }
 
+// UseKey - uses a key to unseal vault
 func UseKey(key string) {
 	unsealToken := UnsealToken{
 		UnsealKey: key,
@@ -77,7 +80,7 @@ func UseKey(key string) {
 
 	b := toJSON(unsealToken)
 
-	req, err := http.NewRequest("POST", GetVaultUrl("/v1/sys/unseal"), &b)
+	req, err := http.NewRequest("POST", GetVaultURL("/v1/sys/unseal"), &b)
 	if err != nil {
 		panic(err)
 	}
@@ -106,62 +109,11 @@ func UseKey(key string) {
 	fromJSON(vaultResponse, &target)
 }
 
-// func Verify(status) error {
-// 	// res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
-// 	// if err != nil {
-// 	// 	log.Printf("err: %s", err)
-// 	// }
-// 	// if res != nil && res.Body != nil {
-// 	// 	res.Body.Close()
-// 	// }
-
-// 	// // status := GetStatus()
-// 	// status := res.StatusCode
-// 	// log.Printf("Got status of: %d", status)
-
-// 	switch status {
-// 	case 200:
-// 		log.Println("Vault is initialized and unsealed.")
-// 	case 429:
-// 		log.Println("Vault is unsealed and in standby mode.")
-// 	case 501:
-// 		log.Println("Vault is not initialized. Initializing and unsealing...")
-// 		vaultResponse := Initialize()
-// 		log.Print("Initialized!! Saving Tokens")
-// 		SaveTokens(vaultResponse)
-// 		Unseal()
-// 	case 503:
-// 		log.Println("Vault is sealed. Unsealing...")
-// 		Unseal()
-// 	default:
-// 		log.Printf("Vault is in an unknown state. Status code: %d", status)
-// 	}
-
-// 	return nil
-// }
-
-// func GetStatus() int {
-// 	// res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
-// 	res, err := httpClient.Head(GetVaultUrl("/v1/sys/health"))
-// 	if res != nil && res.Body != nil {
-// 		res.Body.Close()
-// 	}
-// 	if err != nil {
-// 		log.Printf("err: %s", err)
-// 		log.Printf("Sleeping 10 seconds")
-// 		time.Sleep(10 * time.Second)
-// 		GetStatus()
-// 	}
-// 	log.Printf("Status Code: %d", res.StatusCode)
-// 	return res.StatusCode
-// }
-
-func GetVaultUrl(url string) string {
+// GetVaultURL - crafts url for vault
+func GetVaultURL(url string) string {
 	vaultAddr := os.Getenv("VAULT_ADDR")
 	if vaultAddr == "" {
 		return "http://127.0.0.1:8200" + url
-		// return "http://vault-dev.exzeo.io:8200" + url
 	}
-
 	return vaultAddr + url
 }

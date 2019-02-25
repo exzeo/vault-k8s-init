@@ -12,8 +12,9 @@ import (
 	"strconv"
 )
 
+// GetSecret - retrieves secret from Kubernetes
 func GetSecret() Secret {
-	req, err := http.NewRequest("GET", GetSecretUrl()+"/"+vaultSecretName, nil)
+	req, err := http.NewRequest("GET", GetSecretURL()+"/"+vaultSecretName, nil)
 	if err != nil {
 		log.Print(err)
 	}
@@ -57,6 +58,7 @@ func GetSecret() Secret {
 	return target
 }
 
+// IsSecretExists - checks if secret exists already in Kubernetes
 func IsSecretExists() (bool, string) {
 	log.Print("Checking for tokens")
 	token := GetSecret()
@@ -66,9 +68,9 @@ func IsSecretExists() (bool, string) {
 	return true, "Secret Exists!"
 }
 
+// SaveTokens - checks for tokens then formats to be saved
 func SaveTokens(tokens VaultToken) {
 	exists, err := IsSecretExists()
-	log.Println("Tokens exist?: " + strconv.FormatBool(exists))
 
 	if exists == true {
 		log.Print(err)
@@ -86,6 +88,7 @@ func SaveTokens(tokens VaultToken) {
 	CreateSecret(secret)
 }
 
+// CreateSecret - creates the secret in Kubernetes
 func CreateSecret(vault K8sSecrets) {
 	secret := Secret{
 		Kind:       "Secret",
@@ -98,7 +101,7 @@ func CreateSecret(vault K8sSecrets) {
 
 	b := toJSON(secret)
 
-	req, err := http.NewRequest("POST", GetSecretUrl(), &b)
+	req, err := http.NewRequest("POST", GetSecretURL(), &b)
 	if err != nil {
 		log.Print(err)
 		// panic(err)
@@ -139,6 +142,7 @@ func CreateSecret(vault K8sSecrets) {
 	}
 }
 
+// GetBearerToken - grabs the token from /var/run/secrets/kubernetes.io/serviceaccount/token - needs correct RBAC permissions
 func GetBearerToken() string {
 
 	location := "/var/run/secrets/kubernetes.io/serviceaccount/token"
@@ -155,7 +159,8 @@ func GetBearerToken() string {
 	return ""
 }
 
-func GetSecretUrl() string {
+// GetSecretURL - formats the URL to access Kubernetes secrets
+func GetSecretURL() string {
 
 	var url string
 

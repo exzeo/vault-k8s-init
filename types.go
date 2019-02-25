@@ -56,10 +56,12 @@ type K8sSecrets struct {
 	Token5    string  `json:"key5"`
 }
 
+// UnsealToken holds one token used to unseal vault.
 type UnsealToken struct {
 	UnsealKey string   `json:"key"`
 }
 
+// VaultResponse holds staus of vault.
 type VaultResponse struct {
 	Sealed bool   `json:"sealed"`
 	Progress int   `json:"progress"`
