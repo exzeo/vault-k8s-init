@@ -119,6 +119,7 @@ func Verify() error {
 	case 501:
 		log.Println("Vault is not initialized. Initializing and unsealing...")
 		vaultResponse := Initialize()
+		log.Print("Initialized!! Saving Tokens")
 		SaveTokens(vaultResponse)
 		Unseal()
 	case 503:

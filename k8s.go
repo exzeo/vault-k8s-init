@@ -16,7 +16,6 @@ func GetSecret() Secret {
 	req, err := http.NewRequest("GET", GetSecretUrl()+"/"+vaultSecretName, nil)
 	if err != nil {
 		log.Print(err)
-		panic(err)
 	}
 
 	req.Header.Add("Content-Type", "application/json")
@@ -29,7 +28,6 @@ func GetSecret() Secret {
 	res, err := httpClient.Do(req)
 	if err != nil {
 		log.Print(err)
-		panic(err)
 	}
 	defer res.Body.Close()
 
@@ -44,6 +42,7 @@ func GetSecret() Secret {
 }
 
 func IsSecretExists() (bool, string) {
+	log.Print("Checking for tokens")
 	token := GetSecret()
 	if token.Data.RootToken == "" {
 		return false, ""
@@ -53,9 +52,10 @@ func IsSecretExists() (bool, string) {
 
 func SaveTokens(tokens VaultToken) {
 	exists, err := IsSecretExists()
+	log.Println("Tokens exist?: " + strconv.FormatBool(exists))
+
 	if exists == true {
 		log.Print(err)
-		panic(err)
 	}
 
 	secret := K8sSecrets{
@@ -69,13 +69,6 @@ func SaveTokens(tokens VaultToken) {
 
 	CreateSecret(secret)
 }
-
-
-
-
-
-
-
 
 func CreateSecret(vault K8sSecrets) {
 	secret := Secret{
@@ -91,7 +84,8 @@ func CreateSecret(vault K8sSecrets) {
 
 	req, err := http.NewRequest("POST", GetSecretUrl(), &b)
 	if err != nil {
-		panic(err)
+		log.Print(err)
+		// panic(err)
 	}
 
 	token := GetBearerToken()
@@ -119,7 +113,8 @@ func CreateSecret(vault K8sSecrets) {
 
 	res, err := client.Do(req)
 	if err != nil {
-		panic(err)
+		log.Print(err)
+		// panic(err)
 	}
 	defer res.Body.Close()
 
@@ -127,14 +122,6 @@ func CreateSecret(vault K8sSecrets) {
 		panic("init: non 201 status code: " + strconv.Itoa(res.StatusCode))
 	}
 }
-
-
-
-
-
-
-
-
 
 func GetBearerToken() string {
 
