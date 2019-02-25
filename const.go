@@ -1,6 +1,9 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+	"time"
+)
 
 var (
 	// NumTokens is the number of tokens created during vault init
@@ -12,5 +15,7 @@ var (
 	// vaultSecretName is name of secret in Kubernetes
 	vaultSecretName = "vault-tokens"
 
-	httpClient http.Client
+	httpClient = http.Client{
+		Timeout: time.Duration(10 * time.Second),
+	}
 )
