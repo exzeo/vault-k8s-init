@@ -82,7 +82,7 @@ func main() {
 			log.Print("Initialized!! Saving Tokens")
 			SaveTokens(vaultResponse)
 			Unseal()
-			Unseal()
+			// Unseal()
 		default:
 			log.Printf("Vault is in an unknown state. Status code: %d", response.StatusCode)
 		}
