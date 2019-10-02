@@ -14,7 +14,7 @@ func main() {
 
 	checkInterval := os.Getenv("CHECK_INTERVAL")
 	if checkInterval == "" {
-		checkInterval = "20"
+		checkInterval = "10"
 	}
 
 	i, err := strconv.Atoi(checkInterval)
@@ -48,11 +48,8 @@ func main() {
 			stop()
 		default:
 		}
-		log.Println("Sleeping")
-		time.Sleep(checkIntervalDuration)
-		log.Println("Done Sleeping")
 
-		response, err := httpClient.Get(GetVaultURL("/v1/sys/health"))
+		response, err := httpClient.Head(GetVaultURL("/v1/sys/health"))
 
 		if response != nil && response.Body != nil {
 			response.Body.Close()
@@ -77,12 +74,7 @@ func main() {
 			Unseal()
 		case 503:
 			log.Println("Vault is sealed. Unsealing...")
-			log.Println("Vault is not initialized. Initializing and unsealing...")
-			vaultResponse := Initialize()
-			log.Print("Initialized!! Saving Tokens")
-			SaveTokens(vaultResponse)
 			Unseal()
-			// Unseal()
 		default:
 			log.Printf("Vault is in an unknown state. Status code: %d", response.StatusCode)
 		}
