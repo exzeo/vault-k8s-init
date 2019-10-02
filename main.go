@@ -14,7 +14,7 @@ func main() {
 
 	checkInterval := os.Getenv("CHECK_INTERVAL")
 	if checkInterval == "" {
-		checkInterval = "10"
+		checkInterval = "20"
 	}
 
 	i, err := strconv.Atoi(checkInterval)
@@ -23,6 +23,7 @@ func main() {
 	}
 
 	checkIntervalDuration := time.Duration(i) * time.Second
+	time.Sleep(checkIntervalDuration)
 
 	//Allow CTRL+C
 	c := make(chan os.Signal, 1)
