@@ -80,7 +80,7 @@ func UseKey(key string) {
 
 	b := toJSON(unsealToken)
 
-	req, err := http.NewRequest("PUT", GetVaultURL("/v1/sys/unseal"), &b)
+	req, err := http.NewRequest("POST", GetVaultURL("/v1/sys/unseal"), &b)
 	if err != nil {
 		panic(err)
 	}

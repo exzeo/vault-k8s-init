@@ -16,6 +16,6 @@ var (
 	vaultSecretName = "vault-tokens"
 
 	httpClient = http.Client{
-		Timeout: time.Duration(20 * time.Second),
+		Timeout: time.Duration(50 * time.Second),
 	}
 )
