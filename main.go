@@ -23,7 +23,6 @@ func main() {
 	}
 
 	checkIntervalDuration := time.Duration(i) * time.Second
-	time.Sleep(checkIntervalDuration)
 
 	//Allow CTRL+C
 	c := make(chan os.Signal, 1)
@@ -49,6 +48,9 @@ func main() {
 			stop()
 		default:
 		}
+		log.Println("Sleeping")
+		time.Sleep(checkIntervalDuration)
+		log.Println("Done Sleeping")
 
 		response, err := httpClient.Head(GetVaultURL("/v1/sys/health"))
 
