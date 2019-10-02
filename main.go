@@ -52,7 +52,7 @@ func main() {
 		time.Sleep(checkIntervalDuration)
 		log.Println("Done Sleeping")
 
-		response, err := httpClient.Head(GetVaultURL("/v1/sys/health"))
+		response, err := httpClient.Get(GetVaultURL("/v1/sys/health"))
 
 		if response != nil && response.Body != nil {
 			response.Body.Close()
