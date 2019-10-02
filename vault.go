@@ -93,16 +93,16 @@ func UseKey(key string) {
 	}
 	defer res.Body.Close()
 
+	vaultResponse, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Println(err)
+	}
+
 	if res.StatusCode != 200 {
 		log.Printf("Status Code: %d", res.StatusCode)
 		log.Printf("Body: %+v", res.Body)
 
 		panic("init: non 200 status code: " + strconv.Itoa(res.StatusCode))
-	}
-
-	vaultResponse, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		log.Println(err)
 	}
 
 	target := VaultResponse{}
