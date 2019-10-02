@@ -100,7 +100,7 @@ func UseKey(key string) {
 
 	if res.StatusCode != 200 {
 		log.Printf("Status Code: %d", res.StatusCode)
-		log.Printf("Body: %+v", res.Body)
+		log.Printf("Body: %+v", vaultResponse)
 
 		panic("init: non 200 status code: " + strconv.Itoa(res.StatusCode))
 	}
