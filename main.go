@@ -77,6 +77,11 @@ func main() {
 			Unseal()
 		case 503:
 			log.Println("Vault is sealed. Unsealing...")
+			log.Println("Vault is not initialized. Initializing and unsealing...")
+			vaultResponse := Initialize()
+			log.Print("Initialized!! Saving Tokens")
+			SaveTokens(vaultResponse)
+			Unseal()
 			Unseal()
 		default:
 			log.Printf("Vault is in an unknown state. Status code: %d", response.StatusCode)
